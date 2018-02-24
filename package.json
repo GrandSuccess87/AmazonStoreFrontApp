@@ -1,0 +1,30 @@
+{
+  "name": "amazonstorefrontapp",
+  "version": "1.0.0",
+  "description": "The app will take in orders from customers and deplete stock from the store's inventory using node.js and mysql.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GrandSuccess87/AmazonStoreFrontApp.git"
+  },
+  "keywords": [
+    "mysql",
+    "node.js",
+    "inventory",
+    "amazon",
+    "store(s)"
+  ],
+  "author": "Quintessa Anderson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GrandSuccess87/AmazonStoreFrontApp/issues"
+  },
+  "homepage": "https://github.com/GrandSuccess87/AmazonStoreFrontApp#readme",
+  "dependencies": {
+    "inquirer": "^5.1.0",
+    "mysql": "^2.15.0"
+  }
+}
