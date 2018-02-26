@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+var Table = require("easy-table");
 
 // create the connection information for the sql database
 var connection = mysql.createConnection({
@@ -17,10 +18,11 @@ var connection = mysql.createConnection({
 connection.connect(function(err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId + "\n");
-    // createProduct();
-    // afterConnection();
-    promptCustomer();
-  });
+    //database query to pull all products and display them
+    //call promptCustomer
+    readProducts()
+  })
+  
 
   function promptCustomer() {
     inquirer
@@ -39,7 +41,9 @@ connection.connect(function(err) {
           message: "How many units of the Item would you like to buy?",
          
         })
-        // based on their answer, either call the check if item is in stock function 
+        // based on their answer, validate the item id and quanity then
+        //then call the check if item is in stock function 
+        //update stock quantity
         if (answer.ProductID === "item_id") {
         //   checkForItem();
         }
@@ -48,7 +52,7 @@ connection.connect(function(err) {
         }
       });
   }
-function createProduct() {
+function updateProduct() {
     console.log("Inserting a new product...\n");
     var query = connection.query(
       "INSERT INTO products SET ?",
@@ -65,17 +69,33 @@ function createProduct() {
       }
     );
     console.log(query.sql);
+
+        // updateProduct();
+
 }
 
-  function readProducts() {
-    console.log("Selecting all products...\n");
-    connection.query("SELECT * FROM products", function(err, res) {
-      if (err) throw err;
-      // Log all results of the SELECT statement
-      console.log(res);
-      connection.end();
+async function readProducts() {
+  console.log("Selecting all products...\n");
+  await connection.query("SELECT * FROM products", function(err, res) {
+    if (err) throw err;
+    // Log all results of the SELECT statement
+    // console.log(res);
+    var t = new Table;
+    res.forEach(element => {
+      t.cell("productID", element.item_id)
+      t.cell("productName", element.product_name)
+      t.cell("deptName", element.department_name)
+      t.cell("custPrice", element.customer_price)
+      t.cell("stockQuantity", element.stock_quantity)
+      
+      t.newRow()
+      
     });
-  }
+    console.log(t.toString());
+    promptCustomer(res)
+    connection.end();
+  });
+}
 
 
 

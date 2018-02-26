@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/GrandSuccess87/AmazonStoreFrontApp#readme",
   "dependencies": {
+    "easy-table": "^1.1.1",
     "inquirer": "^5.1.0",
     "mysql": "^2.15.0"
   }
