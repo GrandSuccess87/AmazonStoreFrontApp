@@ -50,15 +50,19 @@ function promptCustomer() {
         console.log(res);
         for (var i = 0; i < res.length; i++) {
           if (res.item_id === answer.productID) {
-            // getUnitQuantity(answer.ProductUnits);
+            var inputID = answer.productID;
+            console.log(res.stock_quantity);
+            updateItemQuantity(res.stock_quantity);
+            // updateItemQuantity(res.stock_quantity, answer.productID);
+            
           }
-          console.log("ProductID Matched: " + answer.productID);
+          // console.log("ProductID Matched: " + answer.productID);
         }
       });
     })
 }
 // set up getUnitQuanity the exact same way as prompt user
-function getUnitQuantity(quantityAmount) {
+function updateItemQuantity(dbQuantity) {
     inquirer
     .prompt({
       name: "ProductUnits",
@@ -75,42 +79,48 @@ function getUnitQuantity(quantityAmount) {
 
     })
     .then(function (answer) {
-      console.log(answer);
-      var query = "SELECT * FROM products";
-      connection.query(query, function (err, res) {
+      consoe.log(answer);
+    
         console.log(res);
-        for (var i = 0; i < res.length; i++) {
-          if (res.item_id === answer.productID) {
-            // getUnitQuantity(answer.ProductUnits);
-          }
-          console.log("ProductID Matched: " + answer.productID);
-        }
-      });
-    })
-  }
-    //response quanity minus quantityPlaceholder
+        if(answer.ProductUnits <= res.stock_quantity) {
+          var newQuantity = res.stock_quantity - answer.ProductUnits;  
+          // updateProduct(newQuantity);       
+          // var query =  UPDATE products SET stock_quantity = newQuantity WHERE item_id = inputID;
+          
+          connection.query(query, function (err, res) {
+         
+        // })
+                })
+              }})
+            }
+            
+          
+        
+      // });
+    // })
+  // })
 
 
-    function updateProduct() {
-      console.log("Inserting a new product...\n");
-      var query = connection.query(
-        "INSERT INTO products SET ?", {
-          ProductName: "Rocky Road",
-          ProductDepartment: "Ice-Cream",
-          CustomerPrice: 10,
-          StockQuantity: 50
-        },
-        function (err, res) {
-          console.log(res + " product inserted!\n");
-          // Call updateProduct AFTER the INSERT completes
-          // updateProduct();
-        }
-      )
-      console.log(query.sql);
+    // function updateProduct(updatedQuantity) {
+    //   // console.log("Inserting a new product...\n");
+    //   var query = connection.query(
+    //     "INSERT INTO products SET ?", {
+    //       ProductName: "Rocky Road",
+    //       ProductDepartment: "Ice-Cream",
+    //       CustomerPrice: 10,
+    //       updatedQuantity: 50
+    //     },
+    //     function (err, res) {
+    //       console.log(res + " product inserted!\n");
+    //       // Call updateProduct AFTER the INSERT completes
+    //       // updateProduct();
+    //     }
+    //   )
+    //   console.log(query.sql);
 
-      // updateProduct();
+    //   // updateProduct();
 
-    }
+    // }
 
 
     async function readProducts() {
@@ -137,3 +147,11 @@ function getUnitQuantity(quantityAmount) {
         // connection.end();
       });
     }
+
+//pass the answer.ProductID to the update function to update 
+//make sure update is reflected in database
+//if the requested amount is less than or equal to the database quantity amount then show user 
+//the total price
+// if the database quantity = 0 then console.log("insufficient quantity");
+// if the database quantity > 0 then console.log("Sorry, we only have " + res.item_id "in stock")
+//  
