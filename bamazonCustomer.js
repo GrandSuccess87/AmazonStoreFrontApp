@@ -48,13 +48,18 @@ function promptCustomer() {
       var query = "SELECT * FROM products";
       connection.query(query, function (err, res) {
         console.log(res);
+        console.log(res.item_id);
         for (var i = 0; i < res.length; i++) {
           if (res.item_id === answer.productID) {
+            //store answer.productID into a variable to used for update statement
             var inputID = answer.productID;
+
+            //store answer.productID into a variable to used for update statement
+            var dbID = res.item_id;
             console.log(res.stock_quantity);
             updateItemQuantity(res.stock_quantity);
             // updateItemQuantity(res.stock_quantity, answer.productID);
-            
+
           }
           // console.log("ProductID Matched: " + answer.productID);
         }
@@ -63,7 +68,7 @@ function promptCustomer() {
 }
 // set up getUnitQuanity the exact same way as prompt user
 function updateItemQuantity(dbQuantity) {
-    inquirer
+  inquirer
     .prompt({
       name: "ProductUnits",
       type: "input",
@@ -79,79 +84,78 @@ function updateItemQuantity(dbQuantity) {
 
     })
     .then(function (answer) {
-      consoe.log(answer);
-    
+      console.log(answer);
+      var query = "UPDATE products SET stock_quantity = newQuantity WHERE item_id = inputID";
+      connection.query(query, function (err, res) {
         console.log(res);
-        if(answer.ProductUnits <= res.stock_quantity) {
-          var newQuantity = res.stock_quantity - answer.ProductUnits;  
+        if (answer.ProductUnits <= res.stock_quantity) {
+          var newQuantity = res.stock_quantity - answer.ProductUnits;
+          console.log(newQuantity);
           // updateProduct(newQuantity);       
-          // var query =  UPDATE products SET stock_quantity = newQuantity WHERE item_id = inputID;
-          
-          connection.query(query, function (err, res) {
-         
-        // })
-                })
-              }})
-            }
-            
-          
-        
-      // });
-    // })
+        } else {
+          console.log("Insufficient Quantity. Sorry we unfortunately do not have that amount in stock");
+        }
+      })
+    })
+  }
+
+
+  // });
+  // })
   // })
 
 
-    // function updateProduct(updatedQuantity) {
-    //   // console.log("Inserting a new product...\n");
-    //   var query = connection.query(
-    //     "INSERT INTO products SET ?", {
-    //       ProductName: "Rocky Road",
-    //       ProductDepartment: "Ice-Cream",
-    //       CustomerPrice: 10,
-    //       updatedQuantity: 50
-    //     },
-    //     function (err, res) {
-    //       console.log(res + " product inserted!\n");
-    //       // Call updateProduct AFTER the INSERT completes
-    //       // updateProduct();
-    //     }
-    //   )
-    //   console.log(query.sql);
+  // function updateProduct(updatedQuantity) {
+  //   // console.log("Inserting a new product...\n");
+  //   var query = connection.query(
+  //     "INSERT INTO products SET ?", {
+  //       ProductName: "Rocky Road",
+  //       ProductDepartment: "Ice-Cream",
+  //       CustomerPrice: 10,
+  //       updatedQuantity: 50
+  //     },
+  //     function (err, res) {
+  //       console.log(res + " product inserted!\n");
+  //       // Call updateProduct AFTER the INSERT completes
+  //       // updateProduct();
+  //     }
+  //   )
+  //   console.log(query.sql);
 
-    //   // updateProduct();
+  //   // updateProduct();
 
-    // }
+  // }
 
 
-    async function readProducts() {
-      console.log("Selecting all products...\n");
-      await connection.query("SELECT * FROM products", function (err, res) {
-        if (err) throw err;
-        // Log all results of the SELECT statement
-        // console.log(res);
-        //create a new table using a javascript constructor and a for each loop that will
-        //loop through each row and print the corresponding data. 
-        var t = new Table;
-        res.forEach(element => {
-          t.cell("productID", element.item_id)
-          t.cell("productName", element.product_name)
-          t.cell("deptName", element.department_name)
-          t.cell("custPrice", element.customer_price)
-          t.cell("stockQuantity", element.stock_quantity)
+  async function readProducts() {
+    console.log("Selecting all products...\n");
+    await connection.query("SELECT * FROM products", function (err, res) {
+      if (err) throw err;
+      // Log all results of the SELECT statement
+      // console.log(res);
+      //create a new table using a javascript constructor and a for each loop that will
+      //loop through each row and print the corresponding data. 
+      var t = new Table;
+      res.forEach(element => {
+        t.cell("productID", element.item_id)
+        t.cell("productName", element.product_name)
+        t.cell("deptName", element.department_name)
+        t.cell("custPrice", element.customer_price)
+        t.cell("stockQuantity", element.stock_quantity)
 
-          t.newRow()
+        t.newRow()
 
-        });
-        console.log(t.toString());
-        promptCustomer(res)
-        // connection.end();
       });
-    }
+      console.log(t.toString());
+      promptCustomer()
+      // connection.end();
+    });
+  }
 
-//pass the answer.ProductID to the update function to update 
-//make sure update is reflected in database
-//if the requested amount is less than or equal to the database quantity amount then show user 
-//the total price
-// if the database quantity = 0 then console.log("insufficient quantity");
-// if the database quantity > 0 then console.log("Sorry, we only have " + res.item_id "in stock")
-//  
+  //pass the answer.ProductID to the update function to update 
+  //make sure update is reflected in database
+  //if the requested amount is less than or equal to the database quantity amount then show user 
+  //the total price
+  // if the database quantity = 0 then console.log("insufficient quantity");
+  // if the database quantity > 0 then console.log("Sorry, we only have " + res.item_id "in stock")
+  //
