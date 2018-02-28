@@ -24,10 +24,10 @@ connection.connect(function (err) {
 })
 
 
-function promptCustomer() {
+function userInputId(res) {
   inquirer
     .prompt({
-      name: "ProductID",
+      name: "productID",
       type: "input",
       message: "What is the item ID of the product you are searching for?",
       validate: function (value) {
@@ -47,33 +47,34 @@ function promptCustomer() {
       console.log(answer);
       var query = "SELECT * FROM products";
       connection.query(query, function (err, res) {
-        console.log(res);
+        // console.log(res);
         // console.log(res[i].item_id);
+        if (err) throw err;
         for (var i = 0; i < res.length; i++) {
           if (res[i].item_id === answer.productID) {
             //store answer.productID into a variable to used for update statement
-            var inputID = answer.productID;
+            // var userInputID = answer.productID;
 
             //store answer.productID into a variable to used for update statement
             var dbID = res[i].item_id;
-            console.log(res.stock_quantity);
-            updateItemQuantity(res.stock_quantity);
+            // console.log(res.stock_quantity);
+            userInputQuantity(answer.productID);
             // updateItemQuantity(res.stock_quantity, answer.productID);
 
           }
-          // console.log("ProductID Matched: " + answer.productID);
         }
       });
     })
-}
+};
+
+
 // set up getUnitQuanity the exact same way as prompt user
-function updateItemQuantity(dbQuantity) {
-  console.log("updateItemQuantity");
+function userInputQuantity(userInputID) {
   inquirer
     .prompt({
       name: "ProductUnits",
       type: "input",
-      message: "How many units of the Item would you like to buy?",
+      message: "How many would you like to buy?",
       validate: function (value) {
         if (isNaN(value) === false) {
           // Determines if input value is not a number or is a number
@@ -86,19 +87,48 @@ function updateItemQuantity(dbQuantity) {
     })
     .then(function (answer) {
       console.log(answer);
-      var query = "UPDATE products SET stock_quantity = newQuantity WHERE item_id = inputID";
+      //SELECT statement to pull data from user input for itemID
+      var query = 'SELECT * FROM products WHERE item_id=' + userInputID;
       connection.query(query, function (err, res) {
-        console.log(res);
-        if (answer.ProductUnits <= res.stock_quantity) {
-          var newQuantity = res.stock_quantity - answer.ProductUnits;
-          console.log(newQuantity);
-          // updateProduct(newQuantity);       
-        } else {
-          console.log("Insufficient Quantity. Sorry we unfortunately do not have that amount in stock");
+        // console.log(res);
+        if (err) throw err;
+        // for loop through data in the row that matches the item id column for stock quantity
+        for (var i = 0; i < res.length; i++) {
+          if (res[i].stock_quantity < answer.ProductUnits) {
+
+            // if database's quantity is less than input quantity display price, update database
+            console.log("Insufficient Quantity. Sorry we unfortunately do not have that amount in stock. Please try again.");
+            userInputQuantity();
+          } else {
+
+            // if input quantity is less than database's display price, update database
+            if (answer.ProductUnits <= res[i].stock_quantity) {
+
+
+              //calculate total price for customer 
+              var totalPrice = res[i].customer_price * answer.ProductUnits;
+              console.log("Your total cost is: " + totalPrice);
+
+              // update product database with the new quantity using the UPDATE statement
+              connection.query("UPDATE products SET ? WHERE ?", [{
+                    stock_quantity: (res[i].stock_quantity - answer.ProductUnits)
+                  },
+                  {
+                    item_id: (userInputID)
+                  }
+                ],
+                function (err, res) {
+                  if (err) throw err;
+                  // var newQuantity = res[i].stock_quantity - answer.ProductUnits;
+                  // console.log(newQuantity);
+                  console.log("Order Completed Successfully!!");
+                })
+            }
+          }
         }
       })
     })
-  }
+}
 
 
   // });
@@ -128,7 +158,7 @@ function updateItemQuantity(dbQuantity) {
   // }
 
 
-  async function readProducts() {
+  async function readProducts(res) {
     console.log("Selecting all products...\n");
     await connection.query("SELECT * FROM products", function (err, res) {
       if (err) throw err;
@@ -148,7 +178,7 @@ function updateItemQuantity(dbQuantity) {
 
       });
       console.log(t.toString());
-      promptCustomer()
+      userInputId(res)
       // connection.end();
     });
   }
