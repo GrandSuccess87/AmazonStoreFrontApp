@@ -47,16 +47,19 @@ function userInputId(res) {
       console.log(answer);
       var query = "SELECT * FROM products";
       connection.query(query, function (err, res) {
-        // console.log(res);
+        console.log("hello");
         // console.log(res[i].item_id);
         if (err) throw err;
         for (var i = 0; i < res.length; i++) {
-          if (res[i].item_id === answer.productID) {
+          console.log(typeof res[i].item_id);
+          console.log(typeof answer.productID);
+          if (res[i].item_id === parseInt(answer.productID)) {
             //store answer.productID into a variable to used for update statement
             // var userInputID = answer.productID;
 
             //store answer.productID into a variable to used for update statement
             var dbID = res[i].item_id;
+            console.log("hello again");
             // console.log(res.stock_quantity);
             userInputQuantity(answer.productID);
             // updateItemQuantity(res.stock_quantity, answer.productID);
@@ -70,6 +73,7 @@ function userInputId(res) {
 
 // set up getUnitQuanity the exact same way as prompt user
 function userInputQuantity(userInputID) {
+  console.log("userInputQuantity");
   inquirer
     .prompt({
       name: "ProductUnits",
