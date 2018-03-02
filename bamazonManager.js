@@ -48,7 +48,9 @@ function runSearch() {
             switch (answer.action) {
             case "View Products for Sale":
             // console.log(answer.action);
-            var query = "SELECT * FROM products ORDER BY department_name";
+    
+           var query = "SELECT * FROM products ORDER BY department_name";
+                
             // console.log(query);
             showProducts(query);
             break;
@@ -73,11 +75,11 @@ function runSearch() {
     
 
 
-   function showProducts(res) {
+   function showProducts(query) {
     console.log("showProducts");
     
     console.log("Selecting all products...\n");
-     connection.query("SELECT * FROM products", function (err, res) {
+     connection.query(query, function (err, res) {
       if (err) throw err;
       // Log all results of the SELECT statement
       for(var i = 0; i<res.length; i++){
