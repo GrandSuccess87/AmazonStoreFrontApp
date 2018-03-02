@@ -2,10 +2,25 @@ var mysql = require("mysql");
 var inquirer = require("inquirer");
 var Table = require("easy-table");
 
+var express = require("express");
+// var bodyParser = require("body-parser");
+// var path = require("path");
+
+// Sets up the Express App
+// =============================================================
+var app = express();
+
+var PORT = process.env.PORT || 3307;
+
+app.listen(PORT, function() {
+  console.log("App listening on PORT " + PORT);
+});
+
 // create the connection information for the sql database
 var connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
+  
 
   // Your username
   user: "root",
@@ -173,4 +188,5 @@ function userInputQuantity(userInputID) {
     });
   }
 
+ 
   
