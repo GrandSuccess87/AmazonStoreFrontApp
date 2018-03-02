@@ -44,25 +44,18 @@ function userInputId(res) {
       // (copy and paste next inquirer inside the successful if_)
     })
     .then(function (answer) {
-      console.log(answer);
+      // console.log(answer);
       var query = "SELECT * FROM products";
       connection.query(query, function (err, res) {
-        console.log("hello");
-        // console.log(res[i].item_id);
         if (err) throw err;
         for (var i = 0; i < res.length; i++) {
-          console.log(typeof res[i].item_id);
-          console.log(typeof answer.productID);
+          // console.log(typeof res[i].item_id);
+          // console.log(typeof answer.productID);
           if (res[i].item_id === parseInt(answer.productID)) {
             //store answer.productID into a variable to used for update statement
-            // var userInputID = answer.productID;
+            var userInputID = answer.productID;
 
-            //store answer.productID into a variable to used for update statement
-            var dbID = res[i].item_id;
-            console.log("hello again");
-            // console.log(res.stock_quantity);
             userInputQuantity(answer.productID);
-            // updateItemQuantity(res.stock_quantity, answer.productID);
 
           }
         }
@@ -73,7 +66,7 @@ function userInputId(res) {
 
 // set up getUnitQuanity the exact same way as prompt user
 function userInputQuantity(userInputID) {
-  console.log("userInputQuantity");
+  // console.log("userInputQuantity");
   inquirer
     .prompt({
       name: "ProductUnits",
@@ -90,7 +83,7 @@ function userInputQuantity(userInputID) {
 
     })
     .then(function (answer) {
-      console.log(answer);
+      // console.log(answer);
       //SELECT statement to pull data from user input for itemID
       var query = 'SELECT * FROM products WHERE item_id=' + userInputID;
       connection.query(query, function (err, res) {
@@ -125,7 +118,22 @@ function userInputQuantity(userInputID) {
                   if (err) throw err;
                   // var newQuantity = res[i].stock_quantity - answer.ProductUnits;
                   // console.log(newQuantity);
-                  console.log("Order Completed Successfully!!");
+                  console.log("Your Order Has Been Completed Successfully!!");
+                  //inquire if user would like to purchase another item
+                  inquirer.prompt([
+                    {
+                        name: "yesNo",
+                        type: "rawlist",
+                        message: "Would you like to make another purchase?",
+                        choices: ["Y", "N"]
+                    }])
+                    .then(function(response) {
+                        if (response.yesNo == "Y"){
+                          readProducts();
+                        } else {
+                                console.log("Thank you for your order!")
+                            } 
+                        });   
                 })
             }
           }
@@ -135,45 +143,17 @@ function userInputQuantity(userInputID) {
 }
 
 
-  // });
-  // })
-  // })
-
-
-  // function updateProduct(updatedQuantity) {
-  //   // console.log("Inserting a new product...\n");
-  //   var query = connection.query(
-  //     "INSERT INTO products SET ?", {
-  //       ProductName: "Rocky Road",
-  //       ProductDepartment: "Ice-Cream",
-  //       CustomerPrice: 10,
-  //       updatedQuantity: 50
-  //     },
-  //     function (err, res) {
-  //       console.log(res + " product inserted!\n");
-  //       // Call updateProduct AFTER the INSERT completes
-  //       // updateProduct();
-  //     }
-  //   )
-  //   console.log(query.sql);
-
-  //   // updateProduct();
-
-  // }
-
-
   async function readProducts(res) {
     console.log("readProducts");
     console.log("Selecting all products...\n");
-    // console.log("test");
     await connection.query("SELECT * FROM products", function (err, res) {
       if (err) throw err;
       // Log all results of the SELECT statement
       for(var i = 0; i<res.length; i++){
-        console.log("Product ID: " + res[i].item_id + " | " + "Product: " + res[i].product_name + " | " + "Department: " + res[i].department_name + " | " + "Price: " + res[i].customer_price + " | " + "Quantity: " + res[i].stock_quantity);
-        console.log('--------------------------------------------------------------------------------------------------')
+        // console.log("Product ID: " + res[i].item_id + " | " + "Product: " + res[i].product_name + " | " + "Department: " + res[i].department_name + " | " + "Price: " + res[i].customer_price + " | " + "Quantity: " + res[i].stock_quantity);
+        // console.log('--------------------------------------------------------------------------------------------------')
     }
-      console.log(res);
+      // console.log(res);
       //create a new table using a javascript constructor and a for each loop that will
       //loop through each row and print the corresponding data. 
       var t = new Table;
@@ -193,10 +173,4 @@ function userInputQuantity(userInputID) {
     });
   }
 
-  //pass the answer.ProductID to the update function to update 
-  //make sure update is reflected in database
-  //if the requested amount is less than or equal to the database quantity amount then show user 
-  //the total price
-  // if the database quantity = 0 then console.log("insufficient quantity");
-  // if the database quantity > 0 then console.log("Sorry, we only have " + res.item_id "in stock")
-  //
+  
