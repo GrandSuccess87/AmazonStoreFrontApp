@@ -24,11 +24,11 @@ var connection = mysql.createConnection({
     if (err) throw err;
     console.log("connected as id " + connection.threadId + "\n");
     // showProducts()
-    runSearch();
+    managerView();
     
   })
 
-function runSearch() {
+function managerView() {
 
     //use inquirer to prompt the question and available options
         inquirer
@@ -41,23 +41,36 @@ function runSearch() {
               "View Low Inventory",
               "Add to Inventory",
               "Add New Product",
+              "Exit"
             ]
           })
           .then(function (answer) {
             // console.log(answer);
             switch (answer.action) {
-            case "View Products for Sale":
+                case "View Products for Sale":
             // console.log(answer.action);
-    
-           var query = "SELECT * FROM products ORDER BY department_name";
-                
+                var query = "SELECT * FROM products ORDER BY department_name";   
             // console.log(query);
-            showProducts(query);
-            break;
+                showProducts(query);
+
+                setTimeout(function() {
+                    
+                    managerView();
+
+               }, 5000);
+                break;
               
             case "View Low Inventory":
-            var query = "SELECT * FROM products where stock_quantity < 5 ORDER BY department_name";
+            var query = "SELECT * FROM products WHERE stock_quantity < 10 ORDER BY department_name";
+            console.log(query);
             showProducts(query);
+            setTimeout(function() {
+                
+                managerView();
+
+           }, 5000);
+            break;
+          
             break;
 
       
@@ -101,19 +114,26 @@ function runSearch() {
 
       });
       console.log(t.toString());
-     
+    //   managerView();
+      
     });
-    // runSearch();
+    
   }
 
   function addToInventory () {
 
     inquirer
-    .prompt({
-      name: "Inv",
+    .prompt([{
+      name: "id",
       type: "input",
-      message: "Would you like to add more stock quantity to an item?",
-  })
+      message: "Please enter the item id of the product you would like to restock?",
+  },
+  {  name: "quantity",
+    type: "input",
+    message: "Please enter how much you would like to restock",
+
+  }
+])
   .then (function(answer) {
 
   })
