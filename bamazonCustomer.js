@@ -163,11 +163,17 @@ function userInputQuantity(userInputID) {
 
 
   async function readProducts(res) {
+    console.log("readProducts");
     console.log("Selecting all products...\n");
+    // console.log("test");
     await connection.query("SELECT * FROM products", function (err, res) {
       if (err) throw err;
       // Log all results of the SELECT statement
-      // console.log(res);
+      for(var i = 0; i<res.length; i++){
+        console.log("Product ID: " + res[i].item_id + " | " + "Product: " + res[i].product_name + " | " + "Department: " + res[i].department_name + " | " + "Price: " + res[i].customer_price + " | " + "Quantity: " + res[i].stock_quantity);
+        console.log('--------------------------------------------------------------------------------------------------')
+    }
+      console.log(res);
       //create a new table using a javascript constructor and a for each loop that will
       //loop through each row and print the corresponding data. 
       var t = new Table;
