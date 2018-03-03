@@ -7,6 +7,11 @@ var mysql = require("mysql");
 var inquirer = require("inquirer");
 var Table = require("easy-table");
 
+// VARIABLES NEEDED
+var query;
+var inputID;
+var newQuantity;
+
 // create the connection information for the sql database
 var connection = mysql.createConnection({
     host: "localhost",
@@ -49,7 +54,7 @@ function managerView() {
             switch (answer.action) {
                 case "View Products for Sale":
             // console.log(answer.action);
-                var query = "SELECT * FROM products ORDER BY department_name";   
+                 query = "SELECT * FROM products ORDER BY department_name";   
             // console.log(query);
                 showProducts(query);
 
@@ -61,22 +66,26 @@ function managerView() {
                 break;
               
             case "View Low Inventory":
-            var query = "SELECT * FROM products WHERE stock_quantity < 10 ORDER BY department_name";
+             query = "SELECT * FROM products WHERE stock_quantity < 10 ORDER BY department_name";
             console.log(query);
             showProducts(query);
             setTimeout(function() {
                 
                 managerView();
 
-           }, 5000);
-            break;
-          
+           }, 3000);
             break;
 
       
-            //   case "Add to Inventory":
-            //     addToInventory();
-            //     break;
+              case "Add to Inventory":
+              query = 'UPDATE products SET stock_quantity =' + newQuantity + 'WHERE item_ID = ' + inputID;
+              addInventory(query);
+              setTimeout(function() {
+                
+                managerView();
+
+           }, 10000);
+              break;
       
             //   case "Add New Product":
             //     addNewProduct();
@@ -120,22 +129,28 @@ function managerView() {
     
   }
 
-  function addToInventory () {
+  function addInventory (query) {
 
     inquirer
     .prompt([{
       name: "id",
       type: "input",
-      message: "Please enter the item id of the product you would like to restock?",
+      message: "Please enter the id of the product you would like to restock.",
   },
   {  name: "quantity",
     type: "input",
-    message: "Please enter how much you would like to restock",
+    message: "Please enter how much you would like to add.",
 
   }
 ])
   .then (function(answer) {
-
+    // console.log(answer.id);
+    console.log(typeof answer.id);
+    // console.log(answer.quantity);
+    console.log(typeof answer.quantity);
+    inputID = parseInt(answer.id);    
+    newQuantity = parseInt(answer.quantity);
+    console.log("Inventory successfully added!!");
   })
 }
 
