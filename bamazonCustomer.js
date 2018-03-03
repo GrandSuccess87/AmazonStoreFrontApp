@@ -53,10 +53,7 @@ function userInputId(res) {
         }
         return false;
       }
-      // if (res.includes(answer.name){
-      //check w3schoold array methods for best use (indexOf etc)
-      // then allow you to the next question, else, redeisplay question
-      // (copy and paste next inquirer inside the successful if_)
+     
     })
     .then(function (answer) {
       // console.log(answer);
@@ -67,8 +64,6 @@ function userInputId(res) {
           // console.log(typeof res[i].item_id);
           // console.log(typeof answer.productID);
           if (res[i].item_id === parseInt(answer.productID)) {
-            //store answer.productID into a variable to used for update statement
-            var userInputID = answer.productID;
 
             userInputQuantity(answer.productID);
 
@@ -109,7 +104,8 @@ function userInputQuantity(userInputID) {
           if (res[i].stock_quantity < answer.ProductUnits) {
 
             // if database's quantity is less than input quantity display price, update database
-            console.log("Insufficient Quantity. Sorry we unfortunately do not have that amount in stock. Please try again.");
+            console.log("Insufficient Quantity. We Have " + res[i].stock_quantity + " Available in Stock. Please try again.");
+            console.log()
             userInputQuantity();
           } else {
 
