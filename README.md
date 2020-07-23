@@ -1,6 +1,6 @@
 # AmazonStoreFrontApp
 
-This is command line interface (CLI) application is an Amazon-like storefront application that will take in orders from customers and deplete stock from the store's inventory using MySQL and Node.Js.  This application uses MySQL and Inquirer NPM packages for data input and storage. 
+This command line interface (CLI) application is an Amazon-like storefront application that will take in orders from customers and deplete stock from the store's inventory using MySQL and Node.Js.  This application uses MySQL and Inquirer NPM packages for data input and storage. 
 
 Type "Node bamazonCustomer.js" in the command line to run the app.
 
